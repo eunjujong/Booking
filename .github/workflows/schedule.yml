@@ -23,13 +23,15 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Set up Chrome
-      uses: browser-actions/setup-chrome@v2
+    - name: Set up Google Chrome
+      uses: browser-actions/setup-chrome@v1
+      with:
+        chrome-version: 'latest'
 
     - name: Set up ChromeDriver
-      uses: shivammathur/setup-chromedriver@v2
+      uses: actions/setup-chromedriver@v1
       with:
-        chrome-version: '116'
+        chrome-version: 'latest' # Specify the Chrome version if needed
 
     - name: Run the script
       env:
