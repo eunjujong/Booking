@@ -28,7 +28,7 @@ This project is a reservation system for booking slots. It allows users to log i
 
 4. **Run the Script**
     ```bash
-    python reservation_script.py
+    python reservation.py
     
 5. **Testing**
     ```bash
