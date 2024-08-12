@@ -26,6 +26,7 @@ jobs:
     - name: Set up Google Chrome
       uses: browser-actions/setup-chrome@v1
       with:
+        chrome-version: 127.*
         install-chromedriver: true
 
     - name: Run the script
