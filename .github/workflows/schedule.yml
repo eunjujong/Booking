@@ -26,12 +26,8 @@ jobs:
     - name: Set up Google Chrome
       uses: browser-actions/setup-chrome@v1
       with:
-        chrome-version: 'latest'
-
-    - name: Set up ChromeDriver
-      uses: actions/setup-chromedriver@v1
-      with:
-        chrome-version: 'latest' # Specify the Chrome version if needed
+        chrome-version: 120
+        install-chromedriver: true
 
     - name: Run the script
       env:
