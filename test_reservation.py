@@ -62,5 +62,6 @@ class TestReservation(unittest.TestCase):
 
         self.assertEqual(reserved_slots, ["8:00 PM"])
 
+
 if __name__ == '__main__':
     unittest.main()
