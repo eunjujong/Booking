@@ -2,7 +2,8 @@ name: Scheduler
 
 on:
   schedule:
-    - cron: '0 0 * * 1' # Runs every Monday at midnight UTC
+    - cron: '0 18 * * 0' # Runs every Sunday 6 PM UTC
+  workflow_dispatch:
 
 jobs:
   run-script:

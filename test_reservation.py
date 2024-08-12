@@ -12,6 +12,7 @@ class TestReservation(unittest.TestCase):
         mock_datetime.today.return_value = mock_today
         mock_datetime.side_effect = lambda *args, **kwargs: datetime.datetime(*args, **kwargs)
 
+        # Calculate expected Friday and Saturday dates
         expected_dates = ['2024-08-09', '2024-08-10']
         
         dates = generate_weekly_dates()
@@ -31,33 +32,33 @@ class TestReservation(unittest.TestCase):
 
         mock_browser.find_element.assert_any_call(By.NAME, "username")
         mock_browser.find_element.assert_any_call(By.NAME, "password")
-        mock_browser.find_element.assert_any_call(By.XPATH, "//button[@type='SUBMIT']")
-        mock_browser.find_element(By.XPATH, "//button[@type='SUBMIT']").click.assert_called_once()
-
+        mock_browser.find_element.assert_any_call(By.XPATH, "//input[@value='Log In']")
+        mock_browser.find_element(By.XPATH, "//input[@value='Log In']").click.assert_called_once()
 
     @patch('reservation.webdriver.Chrome')
     @patch('reservation.WebDriverWait')
-    def test_make_reservation_success(self, _, mock_chrome):
+    def test_make_reservation_success(self, MockWebDriverWait, MockChrome):
         mock_browser = MagicMock()
-        mock_chrome.return_value = mock_browser
+        MockChrome.return_value = mock_browser
 
-        mock_available_element = MagicMock()
-        mock_available_element.text = "Available"
+        mock_slot_element = MagicMock()
+        mock_slot_element.text = "Available"
         mock_reserve_element = MagicMock()
         mock_reserve_element.text = "Reserve"
         mock_registered_element = MagicMock()
         mock_registered_element.text = "registered for this class"
 
         mock_browser.find_element.side_effect = [
-            mock_available_element,  
-            mock_reserve_element,
-            mock_registered_element
+            MagicMock(),  # For slot container
+            mock_slot_element,  # For the slot
+            MagicMock(),  # For the alert div
+            mock_reserve_element,  # Reserve button
+            mock_registered_element  # Reserved confirmation
         ]
 
-        reserved, _ = make_reservation(mock_browser, ["8:00 PM"])
+        reserved_slots = make_reservation(mock_browser, "2024-08-09", ["8:00 PM"], False)
 
-        self.assertTrue(reserved)
-
+        self.assertEqual(reserved_slots, ["8:00 PM"])
 
 if __name__ == '__main__':
     unittest.main()
