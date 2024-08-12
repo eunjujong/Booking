@@ -10,8 +10,9 @@ This project is a reservation system for booking slots. It allows users to log i
 
 - Python 3.x
 - Selenium
-- Other Python dependencies (listed in `requirements.txt`)
+- SendGrid
 - ChromeDriver for Google Chrome
+- Other Python dependencies (listed in `requirements.txt`)
 
 ### Setup
 
@@ -33,4 +34,4 @@ This project is a reservation system for booking slots. It allows users to log i
     
 5. **Testing**
     ```bash
-    python -m unittest discover -s tests
+    python -m unittest test_reservation.py
