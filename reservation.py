@@ -5,6 +5,8 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
+from slots import read_slots
+from notification import send_email
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from datetime import datetime, timedelta
@@ -15,8 +17,11 @@ url_str = os.getenv('URL')
 username_str = os.getenv('USERNAME')
 password_str = os.getenv('PASSWORD')
 
+email_message = ""
+
 def generate_weekly_dates():
     days = []
+    days_str = []
     
     # cronjob runs on Sunday night UDT
     today = datetime.today()
@@ -25,14 +30,11 @@ def generate_weekly_dates():
     saturday = today + timedelta((5 - today.weekday()) % 7)
     
     days.append(friday.strftime('%Y-%m-%d'))
+    days_str.append(friday.strftime('%A'))
     days.append(saturday.strftime('%Y-%m-%d'))
+    days_str.append(saturday.strftime('%A'))
     
-    return days
-
-def read_slots(filename='slots.txt'):
-    with open(filename, 'r') as file:
-        slots = [line.strip() for line in file if line.strip()]
-    return slots
+    return days, days_str
 
 def login(browser):
     print("Logging in...")
@@ -43,6 +45,7 @@ def login(browser):
 
 # back = False - go back to previous page
 def make_reservation(browser, date, slots, back):
+    global email_message
     reserved = []
     for slot in slots:
         try:
@@ -73,7 +76,9 @@ def make_reservation(browser, date, slots, back):
 
                 reserved_div = browser.find_element(By.ID, "idPersonRegistered")
                 if "registered for this class" in reserved_div.text:
-                    print(f"Registration confirmed for slot {slot}\n")   
+                    msg = f"Registration confirmed for slot {slot}\n"
+                    email_message += msg
+                    print(msg)
 
                 reserved.append(slot)
 
@@ -81,15 +86,20 @@ def make_reservation(browser, date, slots, back):
 
             except Exception:
                 if "All available spots for this class session are now taken." in alert_div_text:
-                    print(f"No slots left for the {slot} session\n")
+                    msg = f"No slots left for the {slot} session\n"
+                    email_message += msg
+                    print(msg)
                 elif "registered for this class" in alert_div_text:
-                    print(f"Slot {slot} already registered\n")
+                    msg = f"Slot {slot} already registered\n"
+                    email_message += msg
+                    print(msg)
             
             if not back:
                 back = True
             
         except Exception as e: 
             print(f"An error occurred while trying to reserve {slot}: {e}")
+            send_email(f"Reservation failed for {slot} on {date}: {e}")
             browser.quit()
     
     browser.back()
@@ -97,6 +107,7 @@ def make_reservation(browser, date, slots, back):
     return reserved
         
 def main():
+    global email_message
     slots = read_slots()
     
     options = Options()
@@ -113,16 +124,24 @@ def main():
 
     calendar_button.click()
 
-    for date in generate_weekly_dates():
-        print(f"==== Reserving slots on {date} =====\n")
+    dates, days_str = generate_weekly_dates()
+    for date, day in zip(dates, days_str):
+        msg = f"==== Reserving slots on {date} ({day}) =====\n\n"
+        email_message += msg
+        print(msg)
         date_link = f"{url_str}/calendar.cfm?DATE={date}&calendarType=PERSON:{user_id}&VIEW=week&PERSONID:{user_id[2::]}"
         browser.get(date_link)
 
         reserved_slots = make_reservation(browser, date, slots, False)
         
-        print(f"Slot reserved: {reserved_slots}\n")
+        msg = f"Slot reserved: {reserved_slots}\n\n"
+        email_message += msg
+        print(msg)
 
+    send_email(f"Reserved slots and dates", email_message)
     browser.quit()
+
 
 if __name__ == "__main__":
     main()
+    

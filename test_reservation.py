@@ -14,10 +14,12 @@ class TestReservation(unittest.TestCase):
 
         # Calculate expected Friday and Saturday dates
         expected_dates = ['2024-08-09', '2024-08-10']
+        expected_days_str = ['Friday', 'Saturday']
         
-        dates = generate_weekly_dates()
+        dates, days_str = generate_weekly_dates()
 
         self.assertEqual(dates, expected_dates)
+        self.assertEqual(days_str, expected_days_str)
 
     @patch('reservation.webdriver.Chrome')
     def test_login(self, MockWebDriver):
