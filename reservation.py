@@ -29,6 +29,11 @@ def generate_weekly_dates():
     
     return days
 
+def read_slots(filename='slots.txt'):
+    with open(filename, 'r') as file:
+        slots = [line.strip() for line in file if line.strip()]
+    return slots
+
 def login(browser):
     print("Logging in...")
     browser.find_element(By.NAME, "username").send_keys(username_str)
@@ -91,7 +96,9 @@ def make_reservation(browser, date, slots, back):
 
     return reserved
         
-def main(slots):
+def main():
+    slots = read_slots()
+    
     options = Options()
     options.add_argument("--headless")
 
@@ -118,6 +125,4 @@ def main(slots):
     browser.quit()
 
 if __name__ == "__main__":
-    slots = ["8:00 PM", "9:00 PM"]
-
-    main(slots)
+    main()
