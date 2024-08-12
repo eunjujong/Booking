@@ -23,6 +23,14 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    - name: Set up Chrome
+      uses: browser-actions/setup-chrome@v2
+
+    - name: Set up ChromeDriver
+      uses: shivammathur/setup-chromedriver@v2
+      with:
+        chrome-version: '116'
+
     - name: Run the script
       env:
         URL: ${{ secrets.URL }}
