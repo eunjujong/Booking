@@ -11,6 +11,7 @@ This project is a reservation system for booking slots. It allows users to log i
 - Python 3.x
 - Selenium
 - Other Python dependencies (listed in `requirements.txt`)
+- ChromeDriver for Google Chrome
 
 ### Setup
 
