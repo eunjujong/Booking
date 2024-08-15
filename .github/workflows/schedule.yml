@@ -33,5 +33,6 @@ jobs:
         PASSWORD: ${{ secrets.PASSWORD }}
         SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
         RECEIVER_EMAIL: ${{ secrets.RECEIVER_EMAIL }}
+        SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
       run: |
         python reservation.py
