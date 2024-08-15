@@ -26,9 +26,12 @@ def generate_weekly_dates():
     # cronjob runs on Sunday night UDT
     today = datetime.today()
     
+    thursday = today + timedelta((3 - today.weekday()) % 7)
     friday = today + timedelta((4 - today.weekday()) % 7)
     saturday = today + timedelta((5 - today.weekday()) % 7)
     
+    days.append(thursday.strftime('%Y-%m-%d'))
+    days_str.append(thursday.strftime('%A'))
     days.append(friday.strftime('%Y-%m-%d'))
     days_str.append(friday.strftime('%A'))
     days.append(saturday.strftime('%Y-%m-%d'))
