@@ -146,5 +146,5 @@ def main():
 
 
 if __name__ == "__main__":
-    # main()
-    generate_weekly_dates()
+    main()
+    
