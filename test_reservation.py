@@ -8,13 +8,13 @@ class TestReservation(unittest.TestCase):
     
     @patch('reservation.datetime')
     def test_generate_weekly_dates(self, mock_datetime):
-        mock_today = datetime.datetime(2024, 8, 5)
+        mock_today = datetime.datetime(2024, 8, 3)
         mock_datetime.today.return_value = mock_today
         mock_datetime.side_effect = lambda *args, **kwargs: datetime.datetime(*args, **kwargs)
 
         # Calculate expected Friday and Saturday dates
-        expected_dates = ['2024-08-09', '2024-08-10']
-        expected_days_str = ['Friday', 'Saturday']
+        expected_dates = ['2024-08-08', '2024-08-09', '2024-08-10']
+        expected_days_str = ['Thursday', 'Friday', 'Saturday']
         
         dates, days_str = generate_weekly_dates()
 
