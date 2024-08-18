@@ -23,7 +23,7 @@ def generate_weekly_dates():
     days = []
     days_str = []
     
-    # cronjob runs on Sunday night UDT
+    # cronjob runs on Saturday evening UDT
     today = datetime.today()
     
     thursday = today + timedelta((3 - today.weekday()) % 7)
