@@ -1,15 +1,14 @@
 from dotenv import load_dotenv
 import os
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from slots import read_slots
+from generate_dates import generate_weekly_dates
 from notification import send_email
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from datetime import datetime, timedelta
 
 load_dotenv()
 
@@ -18,26 +17,6 @@ username_str = os.getenv('USERNAME')
 password_str = os.getenv('PASSWORD')
 
 email_message = ""
-
-def generate_weekly_dates():
-    days = []
-    days_str = []
-    
-    # cronjob runs on Saturday evening UDT
-    today = datetime.today()
-    
-    thursday = today + timedelta((3 - today.weekday()) % 7)
-    friday = today + timedelta((4 - today.weekday()) % 7)
-    saturday = today + timedelta(days=7)
-    
-    days.append(thursday.strftime('%Y-%m-%d'))
-    days_str.append(thursday.strftime('%A'))
-    days.append(friday.strftime('%Y-%m-%d'))
-    days_str.append(friday.strftime('%A'))
-    days.append(saturday.strftime('%Y-%m-%d'))
-    days_str.append(saturday.strftime('%A'))
-    
-    return days, days_str
 
 def login(browser):
     print("Logging in...")
@@ -58,15 +37,18 @@ def make_reservation(browser, date, slots, back):
             slot_container = browser.find_element(By.XPATH, f"//td[@style='width:14%; vertical-align:top;']/div[@date='{date}']")
             slot_container.find_element(By.XPATH, f".//div[contains(text(), 'Slot {slot}')]").click()
             
-            xpath1 = "//div[@class='alert red']"
-            xpath2 = "//div[@id='idPersonRegistered']"
+            xpath1 = "//div[@class='red']" # max registration exceeded
+            xpath2 = "//div[@class='alert red']" # no slots
+            xpath3 = "//div[@id='idPersonRegistered']" # already registered
             try:
-                # alert_div = WebDriverWait(browser, 10).until(EC.visibility_of_element_located((By.XPATH, xpath1)))
-                alert_div = browser.find_element(By.XPATH, xpath1)
+                try:
+                    # alert_div = WebDriverWait(browser, 10).until(EC.visibility_of_element_located((By.XPATH, xpath1)))
+                    alert_div = browser.find_element(By.XPATH, xpath1) 
+                except Exception:
+                    alert_div = browser.find_element(By.XPATH, xpath2) 
             except Exception:
                 try:
-                    # alert_div = WebDriverWait(browser, 10).until(EC.visibility_of_element_located((By.XPATH, xpath2)))
-                    alert_div = browser.find_element(By.XPATH, xpath2)
+                    alert_div = browser.find_element(By.XPATH, xpath3) 
                 except Exception:
                     alert_div = "can register"
             
@@ -92,7 +74,11 @@ def make_reservation(browser, date, slots, back):
                     msg = f"No slots left for the {slot} session\n"
                     email_message += msg
                     print(msg)
-                elif "registered for this class" in alert_div_text:
+                if "You've reached the maximum limit of reservations per day." in alert_div_text:
+                    msg = f"Max registration reached for {date}\n"
+                    email_message += msg
+                    print(msg)
+                if "registered for this class" in alert_div_text:
                     msg = f"Slot {slot} already registered\n"
                     email_message += msg
                     print(msg)
@@ -101,8 +87,8 @@ def make_reservation(browser, date, slots, back):
                 back = True
             
         except Exception as e: 
-            print(f"An error occurred while trying to reserve {slot}: {e}")
-            send_email(f"Reservation failed for {slot} on {date}", e)
+            print(f"An error occurred while trying to reserve {slot}: {str(e)}")
+            send_email(f"Reservation failed for {slot} on {date}:", str(e))
             browser.quit()
     
     browser.back()

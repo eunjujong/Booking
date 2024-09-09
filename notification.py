@@ -12,9 +12,16 @@ def send_email(subject, body):
 
     try:
         response = sg.send(mail)
-        print(f"Email sent successfully to: {response.status_code}")
+        print(f"Email sent successfully to: {to_email.email}, Status Code: {response.status_code}")
+        if response.status_code != 202:
+            print(f"Response Body: {response.body}")
+            print(f"Response Headers: {response.headers}")
     except Exception as e:
         print(f"Failed to send email: {e}")
+        if hasattr(e, '__dict__'):
+            print("Error details:", e.__dict__)
+        else:
+            print("Error details:", str(e))
 
 
 if __name__ == "__main__":
