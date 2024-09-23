@@ -150,7 +150,7 @@ def main():
             browser.get(date_link)
             reserved_slots = make_reservation(browser, date, slot, False)
                             
-            msg = f"Slot reserved: {reserved_slots}\n"
+            msg = f"Slots reserved: {reserved_slots}\n"
             email_message += msg
             print(msg)
 
