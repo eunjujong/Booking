@@ -2,7 +2,7 @@ name: Scheduler
 
 on:
   schedule:
-    - cron: '5 17 * * 6' # Runs every Saturday 5:05 PM UTC
+    - cron: '0 17 * * 6' # Runs every Saturday 5 PM UTC
   workflow_dispatch:
 
 jobs:

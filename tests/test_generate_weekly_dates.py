@@ -11,9 +11,12 @@ class TestGenerateDates(unittest.TestCase):
         mock_datetime.today.return_value = mock_today
         mock_datetime.side_effect = lambda *args, **kwargs: datetime.datetime(*args, **kwargs)
 
+        # expected_dates = ['2024-08-06', '2024-08-07', '2024-08-08', '2024-08-09', '2024-08-10', '2024-08-11', '2024-08-12']
+        # expected_days_str = ['Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Monday']
+        
         expected_dates = ['2024-08-08', '2024-08-09', '2024-08-10']
         expected_days_str = ['Thursday', 'Friday', 'Saturday']
-        
+
         dates, days_str = generate_weekly_dates()
 
         self.assertEqual(dates, expected_dates)
