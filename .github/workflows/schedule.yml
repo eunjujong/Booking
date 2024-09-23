@@ -29,8 +29,7 @@ jobs:
     - name: Run the script
       env:
         URL: ${{ secrets.URL }}
-        USERNAME: ${{ secrets.USERNAME }}
-        PASSWORD: ${{ secrets.PASSWORD }}
+        USERNAMES_PASSWORDS: ${{ secrets.USERNAMES_PASSWORDS }}
         SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
         RECEIVER_EMAIL: ${{ secrets.RECEIVER_EMAIL }}
         SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
