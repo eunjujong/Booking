@@ -42,19 +42,19 @@ def make_reservation(browser, date, slot, back):
         slot_container = browser.find_element(By.XPATH, f"//td[@style='width:14%; vertical-align:top;']/div[@date='{date}']")
         slot_container.find_element(By.XPATH, f".//div[contains(text(), 'Slot {slot}')]").click()
         
-        xpath1 = "//div[@class='red']" # max registration exceeded
-        xpath2 = "//div[@class='alert red']" # no slots
-        xpath3 = "//div[@id='idPersonRegistered']" # already registered
+        xpath1 = "//div[@class='red' and contains(text(), 'You've reached the maximum limit of reservations per day')]" # max registration exceeded
+        xpath2 = "//div[@class='alert red' and contains(text(), 'All available spots for this class session are now taken.')]" # no slots
+        xpath3 = "//div[@id='idPersonRegistered' and contains(text(), 'is registered for this class.')]" # already registered
         try:
             try:
                 # alert_div = WebDriverWait(browser, 10).until(EC.visibility_of_element_located((By.XPATH, xpath1)))
                 alert_div = browser.find_element(By.XPATH, xpath1) 
-            except Exception:
+            except:
                 alert_div = browser.find_element(By.XPATH, xpath2) 
-        except Exception:
+        except:
             try:
                 alert_div = browser.find_element(By.XPATH, xpath3) 
-            except Exception:
+            except:
                 alert_div = "can register"
         
         if not isinstance(alert_div, str):
@@ -65,12 +65,12 @@ def make_reservation(browser, date, slot, back):
             browser.find_element(By.ID, "reserve_1").click()
 
             reserved_div = browser.find_element(By.ID, "idPersonRegistered")
-            if "registered for this class" in reserved_div.text:
+            if "can register" in alert_div_text and "registered for this class" in reserved_div.text:
                 msg = f"Registration confirmed for slot {slot}\n"
                 email_message += msg
                 print(msg)
 
-            reserved.append(slot)
+                reserved.append(slot)
 
             browser.back()
 
