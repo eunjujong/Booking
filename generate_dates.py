@@ -27,7 +27,7 @@ def generate_weekly_dates():
     
     thursday = today + timedelta((3 - today.weekday()) % 7)
     friday = today + timedelta((4 - today.weekday()) % 7)
-    saturday = today + timedelta((5 - today.weekday()) % 7)
+    saturday = today + timedelta((5 - today.weekday()) % 7 + 7)
     
     days.append(thursday.strftime('%Y-%m-%d'))
     days_str.append(thursday.strftime('%A'))
