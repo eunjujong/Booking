@@ -93,7 +93,7 @@ def make_reservation(browser, date, slot, back):
         
     except Exception as e: 
         print(f"An error occurred while trying to reserve {slot}: {str(e)}")
-        email_message += "Reservation failed for {date} {slot}\n"
+        email_message += f"Reservation failed for {date} {slot}\n"
     
     browser.back()
 
