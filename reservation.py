@@ -125,7 +125,7 @@ def main():
         
         login_attempt = login(browser, username, password)
         if not login_attempt:
-            msg = f"Login failed for {username}"
+            msg = f"\n=== Login failed for {username[:3]}***** ===\n"
             email_message += msg
             continue
 
