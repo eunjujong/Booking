@@ -5,6 +5,9 @@ on:
     - cron: '57 17 * * 6'
     - cron: '59 17 * * 6'
     - cron: '0 18 * * 6' # Runs every Saturday
+    - cron: '30 18 * * 6'
+    - cron: '45 18 * * 6'
+    - cron: '0 19 * * 6'
   workflow_dispatch:
 
 jobs:
